@@ -133,8 +133,38 @@ BEGIN
     SELECT DISTINCT ISBN, Title, Edition, Publisher, Pages, Year
     FROM  book_table_secnf;
 
+    -- Verification Step
+    RAISE NOTICE 'Verification step: Joining all normalized tables to compare with the original data.';
+    FOR result IN
+        SELECT 
+            course_details.CRN,
+            books_thirdnf.ISBN,
+            books_thirdnf.Title,
+            author_details.Author,
+            books_thirdnf.Edition,
+            books_thirdnf.Publisher,
+            publishers.PublisherAddress,
+            books_thirdnf.Pages,
+            books_thirdnf.Year,
+            course_details.CourseName
+        FROM 
+            course_table_secnf AS course_details
+        JOIN 
+            course_table_thirdnf AS coursebook ON course_details.CRN = coursebook.CRN
+        JOIN 
+            book_table_thirdnf AS books_thirdnf ON coursebook.ISBN = books_thirdnf.ISBN
+        JOIN 
+            author_isbn AS author_details ON books_thirdnf.ISBN = author_details.ISBN
+        JOIN 
+            publisher_table AS publishers ON books_thirdnf.Publisher = publishers.Publisher
+        ORDER BY 
+            course_details.CRN, books_thirdnf.ISBN, author_details.Author
+    LOOP
+        RAISE NOTICE '%', result;
+    END LOOP;
+
     RAISE NOTICE 'Normalization process completed successfully!';
 END;
 $$;
 
-CALL normalize_books();
+CALL normalize_table();
