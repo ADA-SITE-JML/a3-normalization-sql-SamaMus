@@ -11,9 +11,9 @@ CREATE TABLE Books (
     "Course name" VARCHAR(100)
 );
 
-\copy Books ("CRN (PK1)", "ISBN (PK2)", "Title", "Authors", "Edition", "Publisher", "Publisher address", "Pages", "Year", "Course name")
-FROM 'C:\Users\Acer\Desktop\Unnormalized1.csv'
+COPY Books ("CRN (PK1)", "ISBN (PK2)", "Title", "Authors", "Edition", "Publisher", "Publisher address", "Pages", "Year", "Course name")
+FROM 'C:\tmp\Unnormalized1.csv'
 DELIMITER ',' 
-CSV HEADER;
+CSV HEADER ENCODING 'UTF8';
 
 SELECT * FROM Books;
